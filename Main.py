@@ -1,10 +1,7 @@
 import time
+import asyncio
 import cozmo
-from cozmo.util import degrees, distance_mm, speed_mmps
-from cozmo.util import degrees, Pose
-
-robot = cozmo.robot.Robot
-
+from cozmo.util import degrees, distance_mm, speed_mmps, Pose
 
 def say_text(robot: cozmo.robot.Robot):
     print("Saying text")
@@ -53,13 +50,18 @@ def drive_wheels_(robot: cozmo.robot.Robot):
     time.sleep(9)
 
 def roomcreation(robot: cozmo.robot.Robot):
+    cubesize = 50
     initialPosition = 0
-    origin1 = robot.world.create_custom_fixed_object(Pose(100, initialPosition-100, 0, angle_z=degrees(0)),100, 100, 100, relative_to_robot=True)
-    origin2 = robot.world.create_custom_fixed_object(Pose(100,0, initialPosition, angle_z=degrees(0)), 100, 100, 100,
+    origin1 = robot.world.create_custom_fixed_object(Pose(-100, initialPosition - cubesize, 0, angle_z=degrees(0)),
+                                                     cubesize, cubesize, cubesize, relative_to_robot=True)
+    origin2 = robot.world.create_custom_fixed_object(Pose(-100, 0, initialPosition, angle_z=degrees(0)), cubesize,
+                                                     cubesize, cubesize,
                                                     relative_to_robot=True)
-    origin3 = robot.world.create_custom_fixed_object(Pose(100, initialPosition+100, 0, angle_z=degrees(0)), 100, 100, 100,
-                                                    relative_to_robot=True)
+    origin3 = robot.world.create_custom_fixed_object(Pose(-100, initialPosition + cubesize, 0, angle_z=degrees(0)),
+                                                     cubesize, cubesize, cubesize,
+                                                     relative_to_robot=True)
 
+    '''
     target1 = robot.world.create_custom_fixed_object(Pose(-300, initialPosition-100, 0, angle_z=degrees(0)), 100, 100, 100,
                                                      relative_to_robot=True)
     target2 = robot.world.create_custom_fixed_object(Pose(-300, initialPosition, 0, angle_z=degrees(0)), 100, 100, 100,
@@ -67,13 +69,21 @@ def roomcreation(robot: cozmo.robot.Robot):
     target3 = robot.world.create_custom_fixed_object(Pose(-300, initialPosition+100
                                                           , 0, angle_z=degrees(0)), 100, 100, 100,
                                                      relative_to_robot=True)
-
+    '''
     if origin1 and origin2 and origin3:
         print("Created origins succesfully")
-        robot.go_to_pose(Pose(100, 0, 0, angle_z=degrees(180)), relative_to_robot=True).wait_for_completed()
+        # robot.go_to_pose(Pose(100, 0, 0, angle_z=degrees(180)), relative_to_robot=True).wait_for_completed()
+    '''
     if target1 and target2 and target3:
         print("Created targets succesfully")
-        robot.go_to_pose(Pose(300, 0, 0, angle_z=degrees(180)), relative_to_robot=True).wait_for_completed()
+        #robot.go_to_pose(Pose(300, 0, 0, angle_z=degrees(180)), relative_to_robot=True).wait_for_completed()
+    '''
+    robot.go_to_pose(Pose(-100, 0, 0, angle_z=degrees(0)), relative_to_robot=True).wait_for_completed()
+    robot.move_lift(3)
+    time.sleep(5)
+    robot.go_to_pose(Pose(-100, 0, 0, angle_z=degrees(180)), relative_to_robot=True).wait_for_completed()
+    robot.move_lift(-3)
+    time.sleep(5)
 
 ##########################################
 # program = say_text
@@ -84,6 +94,6 @@ def roomcreation(robot: cozmo.robot.Robot):
 # program = move_lift_
 # program = drive_wheels_
 # program = roomcreation, use_3d_viewer=True
-
+##########################################
 
 cozmo.run_program(roomcreation, use_3d_viewer=True)
